@@ -1,5 +1,7 @@
 package com.flightapp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flightapp.dto.AirlineResponse;
 import com.flightapp.entities.Airline;
 import com.flightapp.service.AirlineService;
 
@@ -62,5 +65,20 @@ public class AirlineController {
 		airlineService.deleteAirlineById(id);
 		return new ResponseEntity<String>("Airline deleted Successfully", HttpStatus.OK);
 	}
+	
+	// Rest API to get all airlines along with Flight Details
+		// http://localhost:8080/api/airline/flight
+		@GetMapping("/airline/flight")
+		public List<AirlineResponse> getAllAirlinesWithFlightDetails() {
+			return airlineService.getAllAirlinesWithFlightDetails();		
+		}
+		
+		// Rest API to get airline by Id along with Flight Details
+		// http://localhost:8080/api/airline/flight/7
+		@GetMapping("/airline/flight/{id}")
+		public ResponseEntity<AirlineResponse> getAllAirlinesByIdWithFlightDetails(@PathVariable int id) {
+			return new ResponseEntity<AirlineResponse>(airlineService.getAirlinesByIdWithFlightDetails(id),HttpStatus.OK);
+			
+		}
 
 }

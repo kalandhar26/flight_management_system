@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +21,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Entity
 @Table(name="tbl_airline")
 public class Airline {
@@ -37,6 +35,10 @@ public class Airline {
 	@OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	List<Flight> flights;
+	
+	@OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE)
+	@JsonIgnore
+	List<Schedule> schedules;
 	
 	public Airline (int airlineId,String airlineName, long airlineContactNumber, String airlineAddress) {
 		this.airlineId=airlineId;

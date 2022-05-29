@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AirlineResponse {
 	
+	private int airlineId;
 	private String airlineAddress;
 	private long airlineContactNumber;
 	private String airlineName;

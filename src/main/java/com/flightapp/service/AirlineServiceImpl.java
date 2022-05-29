@@ -1,10 +1,12 @@
 package com.flightapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.flightapp.dto.AirlineResponse;
 import com.flightapp.entities.Airline;
 import com.flightapp.exceptions.AirlineNotFoundException;
 import com.flightapp.repos.AirlineRepository;
@@ -58,6 +60,44 @@ public class AirlineServiceImpl implements AirlineService {
 		// If Present deleting the airline
 				airlineRepository.deleteById(id);	
 
+	}
+
+	@Override
+	public List<AirlineResponse> getAllAirlinesWithFlightDetails() {
+		List<Airline> airlines = airlineRepository.findAll();
+		List<AirlineResponse> responselist = new ArrayList<>();
+
+		airlines.forEach(airline -> {
+			AirlineResponse airlineResponse = new AirlineResponse();
+			airlineResponse.setAirlineId(airline.getAirlineId());
+			airlineResponse.setAirlineName(airline.getAirlineName());
+			airlineResponse.setAirlineAddress(airline.getAirlineAddress());
+			airlineResponse.setAirlineContactNumber(airline.getAirlineContactNumber());
+			Airline airline2 = airline;
+			airline2.getFlights().forEach(flight -> {
+				airlineResponse.setFlightCapacity(flight.getFlightCapacity());
+				airlineResponse.setFlightNumber(flight.getFlightNumber());
+			});
+
+			responselist.add(airlineResponse);
+
+		});
+		return responselist;
+	}
+
+	@Override
+	public AirlineResponse getAirlinesByIdWithFlightDetails(int id) {
+		Airline airline = airlineRepository.findByAirlineId(id);
+		AirlineResponse response = new AirlineResponse();
+		response.setAirlineId(airline.getAirlineId());
+		response.setAirlineName(airline.getAirlineName());
+		response.setAirlineAddress(airline.getAirlineAddress());
+		response.setAirlineContactNumber(airline.getAirlineContactNumber());
+		airline.getFlights().forEach(x -> {
+			response.setFlightCapacity(x.getFlightCapacity());
+			response.setFlightNumber(x.getFlightNumber());
+		});
+		return response;
 	}
 
 }

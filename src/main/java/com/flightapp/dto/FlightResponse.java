@@ -9,9 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlightRequest { 
+public class FlightResponse {
 	
 	private int flightNumber;
 	private int flightCapacity;
+	private String airlineName;
 	private int airlineId;
+
 }

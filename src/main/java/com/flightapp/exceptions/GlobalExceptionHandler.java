@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<Object>(exceptionDetails,HttpStatus.NOT_FOUND);	
 	}
 	
+	@ExceptionHandler
+	public ResponseEntity<?> handleScheduleNotFoundException(ScheduleNotFoundException exception, WebRequest request){
+		ExceptionDetails exceptionDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
+		return new ResponseEntity<Object>(exceptionDetails,HttpStatus.NOT_FOUND);	
+	}
+	
 	// Handling Global Exceptions
 	@ExceptionHandler
 	public ResponseEntity<?> handleGlobalExceptions(Exception exception, WebRequest request){

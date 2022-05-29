@@ -1,5 +1,7 @@
 package com.flightapp.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flightapp.dto.FlightRequest;
-import com.flightapp.entities.Airline;
+import com.flightapp.dto.FlightResponse;
 import com.flightapp.entities.Flight;
-import com.flightapp.service.AirlineService;
 import com.flightapp.service.FlightService;
 
 @RestController
@@ -27,37 +28,18 @@ public class FlightController {
 	@Autowired
 	private FlightService flightService;
 
-	@Autowired
-	private AirlineService airlineService;
-
-	public FlightController(FlightService flightService, AirlineService airlineService) {
+	public FlightController(FlightService flightService) {
 		super();
 		this.flightService = flightService;
-		this.airlineService = airlineService;
 	}
 
 	// Rest API to create a an flight
 	// http://localhost:8080/api/flight
 	@PostMapping("/flight")
 	public ResponseEntity<Flight> createFlight(@Valid @RequestBody FlightRequest request) {
-		Airline airline = airlineService.getAirlineById(request.getAirlineId());
-		Flight flight = new Flight();
-		flight.setFlightCapacity(request.getFlightCapacity());
-		flight.setAirline(airline);
-
-		return new ResponseEntity<Flight>(flightService.saveFlight(flight), HttpStatus.CREATED);
+		return new ResponseEntity<Flight>(flightService.saveFlight(request), HttpStatus.CREATED);
 	}
 
-	// =======================================================
-	// Rest API to create a an flight
-	// http://localhost:8080/api/flight
-//	@PostMapping("/flight")
-//	public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
-//		System.out.println(flight.toString());
-//		return new ResponseEntity<Flight>(flightService.saveFlight(flight), HttpStatus.CREATED);
-//	}
-
-	// ===================================================
 	// Rest API to get all airlines
 	// http://localhost:8080/api/flight
 	@GetMapping("/flight")
@@ -92,6 +74,19 @@ public class FlightController {
 	public ResponseEntity<String> deleteAirlineById(@PathVariable("id") int id) {
 		flightService.deleteFlightByNumber(id);
 		return new ResponseEntity<String>("Flight deleted Successfully", HttpStatus.OK);
+	}
+
+	// http://localhost:8080/api/flight/airlines/3
+	@GetMapping("/flight/flight/{id}")
+	public ResponseEntity<FlightResponse> getFlightDetailswithAirlineNameByFlightNumber(@PathVariable int id) {
+		return new ResponseEntity<FlightResponse>(flightService.getFlightByIdAlongWithAirlineName(id), HttpStatus.OK);
+
+	}
+
+	// http://localhost:8080/api/flight/airlines
+	@GetMapping("/flight/flight")
+	public List<FlightResponse> getAllFlightDetailswithAirlineNameByFlightNumber() {
+		return flightService.getAllFlightsAlongWithAirlineName();
 	}
 
 }
