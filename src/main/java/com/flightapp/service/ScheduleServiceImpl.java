@@ -49,7 +49,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public ScheduleResponse getFlightAndScheduleDetailsByScheduleId(int id) {
-		Schedule schedule = scheduleRepository.findByScheduleId(id);
+		Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+				()-> new ScheduleNotFoundException("Schedule", "id", id));
 		ScheduleResponse response = new ScheduleResponse();
 		response.setScheduleId(schedule.getScheduleId());
 		response.setSourceLocation(schedule.getSourceLocation());

@@ -30,6 +30,8 @@ import lombok.Setter;
 public class Flight {
 	
 	@Id
+//	@GenericGenerator(name = "flight_number", strategy = "com.flightapp.dto.FlightNumberGenarator")
+//	@GeneratedValue(generator = "flight_number")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int flightNumber;
 	private int flightCapacity;
@@ -42,6 +44,10 @@ public class Flight {
 	@OneToMany(mappedBy = "flight", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	List<Schedule> schedules;
+	
+	@OneToMany(mappedBy = "flight", cascade = CascadeType.REMOVE)
+	@JsonIgnore
+	List<Booking> bookings;
 	
 	public Flight (int flightNumber, int flightCapacity) {
 		this.flightNumber=flightNumber;

@@ -1,0 +1,105 @@
+package com.flightapp.service;
+
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.flightapp.dto.BookingRequest;
+import com.flightapp.dto.BookingResponse;
+import com.flightapp.entities.Airline;
+import com.flightapp.entities.Booking;
+import com.flightapp.entities.Flight;
+import com.flightapp.entities.Passenger;
+import com.flightapp.exceptions.FlightNotFoundException;
+import com.flightapp.repos.AirlineRepository;
+import com.flightapp.repos.BookingRepository;
+import com.flightapp.repos.FlightRepository;
+
+@Service
+public class BookingServiceImpl implements BookingService {
+
+	@Autowired
+	private BookingRepository bookingRepository;
+
+	@Autowired
+	private AirlineRepository airlineRepository;
+
+	@Autowired
+	private FlightRepository flightRepository;
+
+	@Override
+	public Booking bookFlightTicket(BookingRequest request) {
+		Random random = new Random();
+		Flight flight = flightRepository.findById(request.getFlightNumber())
+				.orElseThrow(() -> new FlightNotFoundException("Flight", "Id", request.getFlightNumber()));
+		Airline airline = airlineRepository.findByAirlineName(request.getAirlineName());
+
+		Booking booking = new Booking();
+		booking.setBookingId(request.getBookingId());
+		booking.setEmail(request.getEmail());
+		booking.setPnrNumber(random.nextInt(10000, 100000));
+		booking.setAirline(airline);
+		booking.setFlight(flight);
+		for(Passenger p : request.getPassengers()) {
+			p.setBooking(booking);
+		}
+//		Passenger passenger = new Passenger();
+//		booking.getPassengers().add(passenger);
+//		passenger.setBooking(booking);
+		booking.setPassengers(request.getPassengers());
+		return bookingRepository.save(booking);
+	}
+
+	@Override
+	public void cancelBooking(int id) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public BookingResponse getBookingDetailswithEmail(String email) {
+		Booking booking = bookingRepository.findByEmail(email);
+		BookingResponse response = new BookingResponse();
+		response.setBookingId(booking.getBookingId());
+		response.setEmail(booking.getEmail());
+		response.setPnrNumber(booking.getPnrNumber());
+		response.setFlightNumber(booking.getFlight().getFlightNumber());
+		response.setAirlineName(booking.getAirline().getAirlineName());
+		booking.getPassengers().forEach(passenger -> {
+			response.setPassengerId(passenger.getPassengerId());
+			response.setPassengerName(passenger.getPassengerName());
+			response.setPassengerGender(passenger.getPassengerGender());
+			response.setPassengerAge(passenger.getPassengerAge());
+			response.setSeatNumber(passenger.getSeatNumber());
+			response.setOptforMeals(passenger.getOptforMeals());
+			response.setMealType(passenger.getMealType());
+		});
+
+		return response;
+	}
+
+	@Override
+	public BookingResponse getBookingDetailswithpnrNumber(long pnrNumber) {
+		Booking booking = bookingRepository.findByPnrNumber(pnrNumber);
+		BookingResponse response = new BookingResponse();
+		response.setBookingId(booking.getBookingId());
+		response.setEmail(booking.getEmail());
+		response.setPnrNumber(booking.getPnrNumber());
+		response.setFlightNumber(booking.getFlight().getFlightNumber());
+		response.setAirlineName(booking.getAirline().getAirlineName());
+		booking.getPassengers().forEach(passenger -> {
+			response.setPassengerId(passenger.getPassengerId());
+			response.setPassengerName(passenger.getPassengerName());
+			response.setPassengerGender(passenger.getPassengerGender());
+			response.setPassengerAge(passenger.getPassengerAge());
+			response.setSeatNumber(passenger.getSeatNumber());
+			response.setOptforMeals(passenger.getOptforMeals());
+			response.setMealType(passenger.getMealType());
+		});
+
+		return response;
+
+	}
+
+}

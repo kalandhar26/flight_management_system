@@ -40,6 +40,10 @@ public class Airline {
 	@JsonIgnore
 	List<Schedule> schedules;
 	
+	@OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE)
+	@JsonIgnore
+	List<Booking> bookings;
+	
 	public Airline (int airlineId,String airlineName, long airlineContactNumber, String airlineAddress) {
 		this.airlineId=airlineId;
 		this.airlineName=airlineName;

@@ -9,6 +9,6 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
 	public Iterable<Flight> findByAirlineAirlineName(String airlineName);
 	
-	public Flight findByFlightNumber(int fnumber);
+	public Flight findByFlightNumber(int number);
 
 }
