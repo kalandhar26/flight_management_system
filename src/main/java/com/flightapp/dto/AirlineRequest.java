@@ -9,14 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlightResponse {
+public class AirlineRequest {
 	
-	private int flightNumber;
-	private int flightCapacity;
 	private int airlineId;
 	private String airlineName;
-	private String airlineAddress;
 	private long airlineContactNumber;
+	private String airlineAddress;
 	
 
 }

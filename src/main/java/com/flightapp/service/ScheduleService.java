@@ -1,5 +1,6 @@
 package com.flightapp.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.flightapp.dto.ScheduleRequest;
@@ -8,14 +9,30 @@ import com.flightapp.entities.Schedule;
 
 public interface ScheduleService {
 	
-	Schedule saveSchedule(ScheduleRequest request);
+	ScheduleRequest saveSchedule(ScheduleRequest request);
 	
-	ScheduleResponse getFlightAndScheduleDetailsByScheduleId(int id);
+	ScheduleResponse getScheduleById(int id);
 	
-	List<ScheduleResponse> getAllFlightsAndScheduleDetails();
+	List<ScheduleResponse> getAllSchedules();
 	
-	Schedule updateSchedule(Schedule schedule, int id);
+	ScheduleResponse updateSchedule(Schedule schedule, int id);
 	
 	void deleteScheduleById(int id);
+	
+	ScheduleResponse searchScheduleWithFlightNumber(int flightNumber);
+	
+	List<ScheduleResponse> searchSchedulesWithSourceLocation(String sourceLocation);
+	
+	List<ScheduleResponse> searchSchedulesWithDestinationLocation(String destinationLocation);
+	
+	List<ScheduleResponse> searchScheduleWithDepartureDate(LocalDateTime departureDateTime);
+	
+	List<ScheduleResponse> searchScheduleWithArrivalDateTime(LocalDateTime arrivalDateTime);
+	
+	List<ScheduleResponse> searchScheduleWithSourceAndDestinationLocation(String sourceLocation, String destinationLocation);
+	
+	List<ScheduleResponse> searchScheduleWithDepartureAndArrivalDateTime(LocalDateTime departureDateTime,LocalDateTime arrivalDateTime);
+	
+	List<ScheduleResponse> searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(String sourceLocation, String destinationLocation,LocalDateTime departureDateTime,LocalDateTime arrivalDateTime);
 
 }

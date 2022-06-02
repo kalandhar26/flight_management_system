@@ -26,6 +26,7 @@ public class ScheduleRequest {
 	private int availableSeats;
 	private String status;
 	private int flightNumber;
-	private int airlineId;
+//	private int airlineId;
+	private String airlineName;
 
 }

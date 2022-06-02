@@ -1,5 +1,6 @@
 package com.flightapp.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +22,19 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
 	FlightRepository flightRepository;
-	
+
 	@Autowired
 	AirlineRepository airlineRepository;
-	
+
 	@Autowired
 	ScheduleRepository scheduleRepository;
 
 	@Override
-	public Schedule saveSchedule(ScheduleRequest request) {
+	public ScheduleRequest saveSchedule(ScheduleRequest request) {
 		Flight flight = flightRepository.findByFlightNumber(request.getFlightNumber());
-		Airline airline = airlineRepository.findByAirlineId(request.getAirlineId());
-		
+		// Airline airline = airlineRepository.findByAirlineId(request.getAirlineId());
+		Airline airline = airlineRepository.findByAirlineName(request.getAirlineName());
+
 		Schedule schedule = new Schedule();
 		schedule.setSourceLocation(request.getSourceLocation());
 		schedule.setDestinationLocation(request.getDestinationLocation());
@@ -43,18 +45,33 @@ public class ScheduleServiceImpl implements ScheduleService {
 		schedule.setStatus(request.getStatus());
 		schedule.setFlight(flight);
 		schedule.setAirline(airline);
-		
-		return scheduleRepository.save(schedule);
+		scheduleRepository.save(schedule);
+
+		request.setScheduleId(schedule.getScheduleId());
+		request.setSourceLocation(schedule.getSourceLocation());
+		request.setDestinationLocation(schedule.getDestinationLocation());
+		request.setDepartureDateTime(schedule.getDepartureDateTime());
+		request.setArrivalDateTime(schedule.getArrivalDateTime());
+		request.setTicketPrice(schedule.getTicketPrice());
+		request.setAvailableSeats(schedule.getAvailableSeats());
+		request.setStatus(schedule.getStatus());
+		request.setFlightNumber(flight.getFlightNumber());
+//		request.setAirlineId(airline.getAirlineId());
+		request.setAirlineName(airline.getAirlineName());
+
+		return request;
+
 	}
 
 	@Override
-	public ScheduleResponse getFlightAndScheduleDetailsByScheduleId(int id) {
-		Schedule schedule = scheduleRepository.findById(id).orElseThrow(
-				()-> new ScheduleNotFoundException("Schedule", "id", id));
+	public ScheduleResponse getScheduleById(int id) {
+		Schedule schedule = scheduleRepository.findById(id)
+				.orElseThrow(() -> new ScheduleNotFoundException("Schedule", "id", id));
 		ScheduleResponse response = new ScheduleResponse();
 		response.setScheduleId(schedule.getScheduleId());
 		response.setSourceLocation(schedule.getSourceLocation());
-		response.setDestinationLocation(schedule.getDestinationLocation());;
+		response.setDestinationLocation(schedule.getDestinationLocation());
+		;
 		response.setDepartureDateTime(schedule.getDepartureDateTime());
 		response.setArrivalDateTime(schedule.getArrivalDateTime());
 		response.setTicketPrice(schedule.getTicketPrice());
@@ -67,15 +84,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public List<ScheduleResponse> getAllFlightsAndScheduleDetails() {
+	public List<ScheduleResponse> getAllSchedules() {
 		List<Schedule> schedules = scheduleRepository.findAll();
 		List<ScheduleResponse> responseList = new ArrayList<>();
-		
+
 		schedules.forEach(schedule -> {
 			ScheduleResponse response = new ScheduleResponse();
 			response.setScheduleId(schedule.getScheduleId());
 			response.setSourceLocation(schedule.getSourceLocation());
-			response.setDestinationLocation(schedule.getDestinationLocation());;
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			;
 			response.setDepartureDateTime(schedule.getDepartureDateTime());
 			response.setArrivalDateTime(schedule.getArrivalDateTime());
 			response.setTicketPrice(schedule.getTicketPrice());
@@ -84,18 +102,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 			response.setFlightNumber(schedule.getFlight().getFlightNumber());
 			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
 			response.setAirlineName(schedule.getAirline().getAirlineName());
-			
-			responseList.add(response);			
+
+			responseList.add(response);
 		});
-		
+
 		return responseList;
 	}
 
 	@Override
-	public Schedule updateSchedule(Schedule schedule, int id) {
-	
-		Schedule existingSchedule = scheduleRepository.findById(id).orElseThrow(
-				()-> new ScheduleNotFoundException("Schedule", "id", id));
+	public ScheduleResponse updateSchedule(Schedule schedule, int id) {
+
+		Schedule existingSchedule = scheduleRepository.findById(id)
+				.orElseThrow(() -> new ScheduleNotFoundException("Schedule", "id", id));
 		existingSchedule.setSourceLocation(schedule.getSourceLocation());
 		existingSchedule.setDestinationLocation(schedule.getDestinationLocation());
 		existingSchedule.setDepartureDateTime(schedule.getDepartureDateTime());
@@ -103,21 +121,232 @@ public class ScheduleServiceImpl implements ScheduleService {
 		existingSchedule.setAvailableSeats(schedule.getAvailableSeats());
 		existingSchedule.setTicketPrice(schedule.getTicketPrice());
 		existingSchedule.setStatus(schedule.getStatus());
-		
-		return scheduleRepository.save(existingSchedule);
+		scheduleRepository.save(existingSchedule);
 
-		
-		
+		ScheduleResponse response = new ScheduleResponse();
+		response.setScheduleId(existingSchedule.getScheduleId());
+		response.setSourceLocation(existingSchedule.getSourceLocation());
+		response.setDestinationLocation(existingSchedule.getDestinationLocation());
+		response.setDepartureDateTime(existingSchedule.getDepartureDateTime());
+		response.setArrivalDateTime(existingSchedule.getArrivalDateTime());
+		response.setTicketPrice(existingSchedule.getTicketPrice());
+		response.setAvailableSeats(existingSchedule.getAvailableSeats());
+		response.setStatus(existingSchedule.getStatus());
+		response.setFlightNumber(existingSchedule.getFlight().getFlightNumber());
+		response.setFlightCapacity(existingSchedule.getFlight().getFlightCapacity());
+		response.setAirlineName(existingSchedule.getAirline().getAirlineName());
+
+		return response;
+
 	}
 
 	@Override
 	public void deleteScheduleById(int id) {
-		
-		scheduleRepository.findById(id).orElseThrow(
-				()-> new ScheduleNotFoundException("Schedule", "id", id));
-		
+
+		scheduleRepository.findById(id).orElseThrow(() -> new ScheduleNotFoundException("Schedule", "id", id));
+
 		scheduleRepository.deleteById(id);
-		
+
+	}
+
+	public List<ScheduleResponse> searchSchedulesWithSourceLocation(String sourceLocation) {
+		List<Schedule> schedules = scheduleRepository.findBySourceLocation(sourceLocation);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchSchedulesWithDestinationLocation(String destinationLocation) {
+		List<Schedule> schedules = scheduleRepository.findByDestinationLocation(destinationLocation);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchScheduleWithDepartureDate(LocalDateTime departureDateTime) {
+		List<Schedule> schedules = scheduleRepository.findByDepartureDateTime(departureDateTime);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchScheduleWithArrivalDateTime(LocalDateTime arrivalDateTime) {
+		List<Schedule> schedules = scheduleRepository.findByArrivalDateTime(arrivalDateTime);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchScheduleWithSourceAndDestinationLocation(String sourceLocation,
+			String destinationLocation) {
+		List<Schedule> schedules = scheduleRepository.findBySourceLocationAndDestinationLocation(sourceLocation,
+				destinationLocation);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchScheduleWithDepartureAndArrivalDateTime(LocalDateTime departureDateTime,
+			LocalDateTime arrivalDateTime) {
+		List<Schedule> schedules = scheduleRepository.findByDepartureDateTimeAndArrivalDateTime(departureDateTime,
+				arrivalDateTime);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public List<ScheduleResponse> searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(
+			String sourceLocation, String destinationLocation, LocalDateTime departureDateTime,
+			LocalDateTime arrivalDateTime) {
+		List<Schedule> schedules = scheduleRepository
+				.findBySourceLocationAndDestinationLocationAndDepartureDateTimeAndArrivalDateTime(sourceLocation,
+						destinationLocation, departureDateTime, arrivalDateTime);
+		List<ScheduleResponse> responseList = new ArrayList<ScheduleResponse>();
+		schedules.forEach(schedule -> {
+			ScheduleResponse response = new ScheduleResponse();
+			response.setScheduleId(schedule.getScheduleId());
+			response.setSourceLocation(schedule.getSourceLocation());
+			response.setDestinationLocation(schedule.getDestinationLocation());
+			response.setDepartureDateTime(schedule.getDepartureDateTime());
+			response.setArrivalDateTime(schedule.getArrivalDateTime());
+			response.setTicketPrice(schedule.getTicketPrice());
+			response.setAvailableSeats(schedule.getAvailableSeats());
+			response.setStatus(schedule.getStatus());
+			response.setFlightNumber(schedule.getFlight().getFlightNumber());
+			response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+			response.setAirlineName(schedule.getAirline().getAirlineName());
+
+			responseList.add(response);
+
+		});
+
+		return responseList;
+	}
+
+	@Override
+	public ScheduleResponse searchScheduleWithFlightNumber(int flightNumber) {
+		Schedule schedule = scheduleRepository.findByFlightFlightNumber(flightNumber);
+		ScheduleResponse response = new ScheduleResponse();
+		response.setScheduleId(schedule.getScheduleId());
+		response.setSourceLocation(schedule.getSourceLocation());
+		response.setDestinationLocation(schedule.getDestinationLocation());
+		response.setDepartureDateTime(schedule.getDepartureDateTime());
+		response.setArrivalDateTime(schedule.getArrivalDateTime());
+		response.setTicketPrice(schedule.getTicketPrice());
+		response.setAvailableSeats(schedule.getAvailableSeats());
+		response.setStatus(schedule.getStatus());
+		response.setFlightNumber(schedule.getFlight().getFlightNumber());
+		response.setFlightCapacity(schedule.getFlight().getFlightCapacity());
+		response.setAirlineName(schedule.getAirline().getAirlineName());
+		return response;
 	}
 
 }

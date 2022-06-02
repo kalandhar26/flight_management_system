@@ -9,27 +9,27 @@ import com.flightapp.entities.Flight;
 public interface FlightService {
 
 	// method to add flight and it return flight
-	Flight saveFlight(FlightRequest request);
+	FlightRequest saveFlight(FlightRequest request);
 
 	// method to view All Flights available
-	Iterable<Flight> getAllFlights();
-
-	// method to get AllFlight by AirlineName
-	Iterable<Flight> getFlightsByAirlineName(String airlineName);
+	List<FlightResponse> getAllFlights();
 
 	// method to view flight by its number
-	Flight getFlightByNumber(int number);
+	FlightResponse getFlightByNumber(int number);
 
 	// method to modify Flight Details
-	Flight updateFlight(Flight flight, int number);
+	FlightResponse updateFlight(Flight flight, int number);
 
 	// method to delete flight by its number
 	void deleteFlightByNumber(int number);
-	
+
+	// method to get AllFlight by AirlineName
+	//	List<FlightResponse> getFlightsByAirlineName(String airlineName);
+
 	// get Flight Details along with AirlineName
-	FlightResponse getFlightByIdAlongWithAirlineName(int fnumber);
-	
-	//get All Flights Details with Airline Name
-	List<FlightResponse> getAllFlightsAlongWithAirlineName();
+	// FlightResponse getFlightByIdAlongWithAirlineName(int fnumber);
+
+	// get All Flights Details with Airline Name
+	// List<FlightResponse> getAllFlightsAlongWithAirlineName();
 
 }

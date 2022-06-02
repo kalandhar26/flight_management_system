@@ -15,13 +15,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BookingRequest {
 
+	// This DTO class is to send Data into Booking table and Passenger Table
+
 	private int bookingId;
 
 	private String email;
 
 	private int flightNumber;
-	
+
 	private String airlineName;
-	
+
 	List<Passenger> passengers;
 }

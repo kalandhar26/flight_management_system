@@ -33,9 +33,9 @@ public class Schedule {
 	private int scheduleId;
 	private String sourceLocation;
 	private String destinationLocation;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime departureDateTime;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime arrivalDateTime;
 	private double ticketPrice;
 	private int availableSeats;
@@ -53,7 +53,7 @@ public class Schedule {
 
 	public String dateFormatter(LocalDateTime dateTime) {
 		
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formattedDate = myFormatObj.format(dateTime);
 		return formattedDate;
 	}

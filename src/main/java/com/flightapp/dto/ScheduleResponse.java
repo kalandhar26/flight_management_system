@@ -24,7 +24,7 @@ public class ScheduleResponse {
 	private LocalDateTime arrivalDateTime;
 	private double ticketPrice;
 	private int availableSeats;
-	private String status;
+	private String status;	
 	private int flightNumber;
 	private int flightCapacity;
 	private String airlineName;

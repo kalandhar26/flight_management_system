@@ -36,36 +36,30 @@ public class FlightController {
 	// Rest API to create a an flight
 	// http://localhost:8080/api/flight
 	@PostMapping("/flight")
-	public ResponseEntity<Flight> createFlight(@Valid @RequestBody FlightRequest request) {
-		return new ResponseEntity<Flight>(flightService.saveFlight(request), HttpStatus.CREATED);
+	public ResponseEntity<FlightRequest> createFlight(@Valid @RequestBody FlightRequest request) {
+		return new ResponseEntity<FlightRequest>(flightService.saveFlight(request), HttpStatus.CREATED);
 	}
 
 	// Rest API to get all airlines
 	// http://localhost:8080/api/flight
 	@GetMapping("/flight")
-	public Iterable<Flight> getAllFlights() {
+	public List<FlightResponse> getAllFlights() {
 		return flightService.getAllFlights();
 	}
 
-	// Rest API to get all airlines
-	// http://localhost:8080/api/flight/airline/airline_name
-	@GetMapping("/flight/airline/{name}")
-	public Iterable<Flight> getAllFlightsByAirlineName(@PathVariable("name") String name) {
-		return flightService.getFlightsByAirlineName(name);
-	}
 
 	// Rest API to get flight by Id
 	// http://localhost:8080/api/flight/1
 	@GetMapping("/flight/{id}")
-	public ResponseEntity<Flight> getAirlineById(@PathVariable("id") int id) {
-		return new ResponseEntity<Flight>(flightService.getFlightByNumber(id), HttpStatus.OK);
+	public ResponseEntity<FlightResponse> getAirlineById(@PathVariable("id") int id) {
+		return new ResponseEntity<FlightResponse>(flightService.getFlightByNumber(id), HttpStatus.OK);
 	}
 
 	// Rest API to get flight by Id
 	// http://localhost:8080/api/flight/1
 	@PutMapping("/flight/{id}")
-	public ResponseEntity<Flight> updateAirlineById(@RequestBody Flight flight, @PathVariable("id") int id) {
-		return new ResponseEntity<Flight>(flightService.updateFlight(flight, id), HttpStatus.OK);
+	public ResponseEntity<FlightResponse> updateAirlineById(@RequestBody Flight flight, @PathVariable("id") int id) {
+		return new ResponseEntity<FlightResponse>(flightService.updateFlight(flight, id), HttpStatus.OK);
 	}
 
 	// Rest API to delete flight
@@ -75,18 +69,25 @@ public class FlightController {
 		flightService.deleteFlightByNumber(id);
 		return new ResponseEntity<String>("Flight deleted Successfully", HttpStatus.OK);
 	}
+	
+//	 Rest API to get all airlines
+//	 http://localhost:8080/api/flight/airline/airline_name
+//	@GetMapping("/flight/airline/{name}")
+//	public List<FlightResponse> getAllFlightsByAirlineName(@PathVariable("name") String name) {
+//		return flightService.getFlightsByAirlineName(name);
+//	}
 
-	// http://localhost:8080/api/flight/airlines/3
-	@GetMapping("/flight/flight/{id}")
-	public ResponseEntity<FlightResponse> getFlightDetailswithAirlineNameByFlightNumber(@PathVariable int id) {
-		return new ResponseEntity<FlightResponse>(flightService.getFlightByIdAlongWithAirlineName(id), HttpStatus.OK);
-
-	}
-
-	// http://localhost:8080/api/flight/airlines
-	@GetMapping("/flight/flight")
-	public List<FlightResponse> getAllFlightDetailswithAirlineNameByFlightNumber() {
-		return flightService.getAllFlightsAlongWithAirlineName();
-	}
+//	http://localhost:8080/api/flight/airlines/3
+//	@GetMapping("/flight/flight/{id}")
+//	public ResponseEntity<FlightResponse> getFlightDetailswithAirlineNameByFlightNumber(@PathVariable int id) {
+//		return new ResponseEntity<FlightResponse>(flightService.getFlightByIdAlongWithAirlineName(id), HttpStatus.OK);
+//
+//	}
+//
+//	 http://localhost:8080/api/flight/airlines
+//	@GetMapping("/flight/flight")
+//	public List<FlightResponse> getAllFlightDetailswithAirlineNameByFlightNumber() {
+//		return flightService.getAllFlightsAlongWithAirlineName();
+//	}
 
 }

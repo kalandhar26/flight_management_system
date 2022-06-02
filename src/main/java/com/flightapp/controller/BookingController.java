@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class BookingController {
 	BookingService bookingService;
 
 	@PostMapping("/booking")
-	public ResponseEntity<Booking> bookFLight(@Valid @RequestBody BookingRequest request) {
+	public ResponseEntity<Booking> bookFlight(@Valid @RequestBody BookingRequest request) {
 		return new ResponseEntity<Booking>(bookingService.bookFlightTicket(request), HttpStatus.CREATED);
 	}
 
@@ -38,6 +39,12 @@ public class BookingController {
 	public ResponseEntity<BookingResponse> getBookingDetailsWithpnrNumber(@PathVariable("pnrnumber") long pnrNumber) {
 		return new ResponseEntity<BookingResponse>(bookingService.getBookingDetailswithpnrNumber(pnrNumber),
 				HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/booking/{id}")
+	public ResponseEntity<String> cancelBookingBybookingId(@PathVariable("id") int id) {
+		bookingService.cancelBooking(id);
+		return new ResponseEntity<String>("Ticket Cancelled Successfully.!",HttpStatus.OK);
 	}
 
 }
