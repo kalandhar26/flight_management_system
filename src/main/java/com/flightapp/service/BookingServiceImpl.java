@@ -65,8 +65,13 @@ public class BookingServiceImpl implements BookingService {
 		 ScheduleNotFoundException("Schedule", "Id", id));
 		 
 		//== Logic to cancel ticket prior to 24 hrs will not work==
-		LocalDateTime currentDateTime = LocalDateTime.now();
-		LocalDateTime departureDateTime = schedule.getDepartureDateTime();
+		String currentdate = LocalDateTime.now().toString();
+		String departuredate = schedule.getDepartureDateTime().toString();
+		
+		// Change String to Local Date Time
+		
+		LocalDateTime currentDateTime = StrToLDT(currentdate);
+		LocalDateTime departureDateTime = StrToLDT(departuredate);
 		Duration diff = Duration.between(departureDateTime, currentDateTime);
 		// long days = diff.toDays(); // Now we can use only hours
 		long hours = diff.toHours();		
@@ -119,6 +124,13 @@ public class BookingServiceImpl implements BookingService {
 
 		return response;
 
+	}
+	
+	
+	// method to change Str to Date
+	public LocalDateTime StrToLDT(String date) {	
+		LocalDateTime dateTime = LocalDateTime.parse(date);
+		return dateTime;
 	}
 
 }

@@ -25,14 +25,14 @@ public interface ScheduleService {
 	
 	List<ScheduleResponse> searchSchedulesWithDestinationLocation(String destinationLocation);
 	
-	List<ScheduleResponse> searchScheduleWithDepartureDate(LocalDateTime departureDateTime);
+	List<ScheduleResponse> searchScheduleWithDepartureDate(String departureDateTime);
 	
-	List<ScheduleResponse> searchScheduleWithArrivalDateTime(LocalDateTime arrivalDateTime);
+	List<ScheduleResponse> searchScheduleWithArrivalDateTime(String arrivalDateTime);
 	
 	List<ScheduleResponse> searchScheduleWithSourceAndDestinationLocation(String sourceLocation, String destinationLocation);
 	
-	List<ScheduleResponse> searchScheduleWithDepartureAndArrivalDateTime(LocalDateTime departureDateTime,LocalDateTime arrivalDateTime);
+	List<ScheduleResponse> searchScheduleWithDepartureAndArrivalDateTime(String departureDateTime,String arrivalDateTime);
 	
-	List<ScheduleResponse> searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(String sourceLocation, String destinationLocation,LocalDateTime departureDateTime,LocalDateTime arrivalDateTime);
+	List<ScheduleResponse> searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(String sourceLocation, String destinationLocation,String departureDateTime,String arrivalDateTime);
 
 }

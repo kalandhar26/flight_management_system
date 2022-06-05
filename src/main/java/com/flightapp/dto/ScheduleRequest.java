@@ -18,10 +18,10 @@ public class ScheduleRequest {
 	private int scheduleId;
 	private String sourceLocation;
 	private String destinationLocation;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
-	private LocalDateTime departureDateTime;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
-	private LocalDateTime arrivalDateTime;
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
+	private String departureDateTime;
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
+	private String arrivalDateTime;
 	private double ticketPrice;
 	private int availableSeats;
 	private String status;

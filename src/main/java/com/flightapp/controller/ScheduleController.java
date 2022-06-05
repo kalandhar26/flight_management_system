@@ -1,7 +1,8 @@
 package com.flightapp.controller;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import com.flightapp.service.ScheduleService;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("http://localhost:4200")
 public class ScheduleController {
 
 	@Autowired
@@ -33,8 +36,11 @@ public class ScheduleController {
 	// API to add a Schedule
 	// http://localhost:8080/api/schedule
 	@PostMapping("/schedule")
-	public ResponseEntity<ScheduleRequest> saveSchedule(@Valid @RequestBody ScheduleRequest request) {
-		return new ResponseEntity<ScheduleRequest>(scheduleService.saveSchedule(request), HttpStatus.CREATED);
+	public ResponseEntity<Map<String,Boolean>> saveSchedule(@Valid @RequestBody ScheduleRequest request) {
+		scheduleService.saveSchedule(request);
+		Map<String,Boolean> response = new HashMap<>();
+		response.put("Schedule Added Successfully", Boolean.TRUE);
+		return ResponseEntity.ok(response);
 	}
 
 	// API to view All Schedules
@@ -62,9 +68,11 @@ public class ScheduleController {
 	// Rest API to delete flight
 	// http://localhost:8080/api/schedule/1
 	@DeleteMapping("/schedule/{id}")
-	public ResponseEntity<String> deleteScheduleById(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String,Boolean>> deleteScheduleById(@PathVariable("id") int id) {
 		scheduleService.deleteScheduleById(id);
-		return new ResponseEntity<String>("Schedule deleted Successfully", HttpStatus.OK);
+		Map<String,Boolean> response = new HashMap<>();
+		response.put("schedule deleted Successfully", Boolean.TRUE);
+		return ResponseEntity.ok(response);
 	}
 
 	// http://localhost:8080/api/schedule/source/chennai
@@ -84,14 +92,14 @@ public class ScheduleController {
 	// http://localhost:8080/api/schedule/departure/2022-01-01 08:00:00.000000
 	@GetMapping("/schedule/departure/{departureDateTime}")
 	public List<ScheduleResponse> viewScheduleWithDepartureDate(
-			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime departureDateTime) {
+			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String departureDateTime) {
 		return scheduleService.searchScheduleWithDepartureDate(departureDateTime);
 	}
 
 	// http://localhost:8080/api/schedule/arrival/2022-01-02 08:00:00.000000
 	@GetMapping("/schedule/arrival/{arrivalDateTime}")
 	public List<ScheduleResponse> searchScheduleWithArrivalDateTime(
-			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime arrivalDateTime) {
+			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String arrivalDateTime) {
 		return scheduleService.searchScheduleWithArrivalDateTime(arrivalDateTime);
 	}
 
@@ -106,8 +114,8 @@ public class ScheduleController {
 	// http://localhost:8080/api/schedule/departure/2022-01-01 08:00:00.000000/arrival/2022-01-01 08:00:00.000000
 	@GetMapping("/schedule/departure/{departureDateTime}/arrival/{arrivalDateTime}")
 	public List<ScheduleResponse> searchScheduleWithDepartureAndArrivalDateTime(
-			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime departureDateTime,
-			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime arrivalDateTime) {
+			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String departureDateTime,
+			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String arrivalDateTime) {
 		return scheduleService.searchScheduleWithDepartureAndArrivalDateTime(departureDateTime, arrivalDateTime);
 	}
 
@@ -116,8 +124,8 @@ public class ScheduleController {
 	public List<ScheduleResponse> searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(
 			@PathVariable(name = "sourceLocation") String sourceLocation,
 			@PathVariable(name = "destinationLocation") String destinationLocation,
-			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime departureDateTime,
-			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd' 'HH:mm:ss.SSSSSS") LocalDateTime arrivalDateTime) {
+			@PathVariable(name = "departureDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String departureDateTime,
+			@PathVariable(name = "arrivalDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd") String arrivalDateTime) {
 		return scheduleService.searchScheduleWithSourceAndDestinationAndDepartureAndArrivalDateTime(sourceLocation,
 				destinationLocation, departureDateTime, arrivalDateTime);
 	}

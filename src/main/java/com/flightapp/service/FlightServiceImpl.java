@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.flightapp.dto.FlightRequest;
 import com.flightapp.dto.FlightResponse;
 import com.flightapp.entities.Airline;
 import com.flightapp.entities.Flight;
+import com.flightapp.exceptions.AirlineNotFoundException;
 import com.flightapp.exceptions.FlightNotFoundException;
 import com.flightapp.repos.AirlineRepository;
 import com.flightapp.repos.FlightRepository;
@@ -33,6 +35,7 @@ public class FlightServiceImpl implements FlightService {
 	@Override
 	public FlightRequest saveFlight(FlightRequest request) {
 		Airline airline = airlineRepository.findByAirlineId(request.getAirlineId());
+		if(null != airline || !ObjectUtils.isEmpty(airline)) {
 		Flight flight = new Flight();
 		flight.setFlightNumber(request.getFlightNumber());
 		flight.setFlightCapacity(request.getFlightCapacity());
@@ -44,7 +47,10 @@ public class FlightServiceImpl implements FlightService {
 		request.setFlightNumber(flight.getFlightNumber());
 
 		return request;
-
+		}else
+		{
+			throw new AirlineNotFoundException("Airline", "Id", request.getAirlineId());
+		}
 	}
 
 	// Implementation method to get All flights

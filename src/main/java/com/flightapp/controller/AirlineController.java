@@ -1,10 +1,13 @@
 package com.flightapp.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,7 @@ import com.flightapp.service.AirlineService;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("http://localhost:4200")
 public class AirlineController {
 
 	@Autowired
@@ -52,7 +56,7 @@ public class AirlineController {
 		return new ResponseEntity<AirlineResponse>(airlineService.getAirlineById(id), HttpStatus.OK);
 	}
 
-	// Rest API to get airline by Id
+	// Rest API to update airline by Id
 	// http://localhost:8080/api/airline/1
 	@PutMapping("/airline/{id}")
 	public ResponseEntity<AirlineResponse> updateAirlineById(@RequestBody Airline airline, @PathVariable("id") int id) {
@@ -62,9 +66,11 @@ public class AirlineController {
 	// Rest API to delete Airline
 	// http://localhost:8080/api/airline/1
 	@DeleteMapping("/airline/{id}")
-	public ResponseEntity<String> deleteAirlineById(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String,Boolean>> deleteAirlineById(@PathVariable("id") int id) {
 		airlineService.deleteAirlineById(id);
-		return new ResponseEntity<String>("Airline deleted Successfully", HttpStatus.OK);
+		Map<String,Boolean> response = new HashMap<>();
+		response.put("Airline deleted Successfully", Boolean.TRUE);
+		return ResponseEntity.ok(response);
 	}
 	
 	// Rest API to get all airlines along with Flight Details

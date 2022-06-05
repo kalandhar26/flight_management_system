@@ -1,12 +1,15 @@
 package com.flightapp.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,7 @@ import com.flightapp.service.FlightService;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("http://localhost:4200")
 public class FlightController {
 
 	@Autowired
@@ -36,8 +40,11 @@ public class FlightController {
 	// Rest API to create a an flight
 	// http://localhost:8080/api/flight
 	@PostMapping("/flight")
-	public ResponseEntity<FlightRequest> createFlight(@Valid @RequestBody FlightRequest request) {
-		return new ResponseEntity<FlightRequest>(flightService.saveFlight(request), HttpStatus.CREATED);
+	public ResponseEntity<Map<String,Boolean>> createFlight(@Valid @RequestBody FlightRequest request) {
+		flightService.saveFlight(request);
+		Map<String,Boolean> response = new HashMap<>();
+		response.put("Flight Added Successfully", Boolean.TRUE);
+		return ResponseEntity.ok(response);		
 	}
 
 	// Rest API to get all airlines
@@ -65,9 +72,11 @@ public class FlightController {
 	// Rest API to delete flight
 	// http://localhost:8080/api/flight/1
 	@DeleteMapping("/flight/{id}")
-	public ResponseEntity<String> deleteAirlineById(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String,Boolean>> deleteAirlineById(@PathVariable("id") int id) {
 		flightService.deleteFlightByNumber(id);
-		return new ResponseEntity<String>("Flight deleted Successfully", HttpStatus.OK);
+		Map<String,Boolean> response = new HashMap<>();
+		response.put("Flight deleted Successfully", Boolean.TRUE);
+		return ResponseEntity.ok(response);
 	}
 	
 //	 Rest API to get all airlines

@@ -1,6 +1,5 @@
 package com.flightapp.repos;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,15 +16,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
 	public List<Schedule> findBySourceLocationAndDestinationLocation(String source, String destination);
 
-	public List<Schedule> findByDepartureDateTime(LocalDateTime departureDateTime);
+	public List<Schedule> findByDepartureDateTime(String departureDateTime);
 
-	public List<Schedule> findByArrivalDateTime(LocalDateTime arrivalDateTime);
+	public List<Schedule> findByArrivalDateTime(String arrivalDateTime);
 
-	public List<Schedule> findByDepartureDateTimeAndArrivalDateTime(LocalDateTime departureDateTime,
-			LocalDateTime arrivalDateTime);
+	public List<Schedule> findByDepartureDateTimeAndArrivalDateTime(String departureDateTime,
+			String arrivalDateTime);
 
 	public List<Schedule> findBySourceLocationAndDestinationLocationAndDepartureDateTimeAndArrivalDateTime(String source,
-			String destination, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime);
+			String destination, String departureDateTime, String arrivalDateTime);
 	
 	public Schedule findByFlightFlightNumber(int flightNumber);
 
